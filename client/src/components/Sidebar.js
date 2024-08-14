@@ -53,10 +53,6 @@ const Sidebar = ({ currentPath = '' }) => {
               <ListItemIcon><BookIcon sx={{ color: '#1976d2' }} /></ListItemIcon>
               <ListItemText primary="Book Return" primaryTypographyProps={{ fontWeight: 'bold' }} />
             </ListItem>
-            <ListItem button component={Link} to="/owner/settings" selected={isActive('/owner/settings')}>
-              <ListItemIcon><SettingsIcon sx={{ color: '#1976d2' }} /></ListItemIcon>
-              <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 'bold' }} />
-            </ListItem>
           </>
         )}
       </List>
@@ -68,6 +64,12 @@ const Sidebar = ({ currentPath = '' }) => {
         </ListItem>
         {role === 'admin' && (
           <ListItem button component={Link} to="/admin/settings" selected={isActive('/admin/settings')}>
+            <ListItemIcon><SettingsIcon sx={{ color: '#1976d2' }} /></ListItemIcon>
+            <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 'bold' }} />
+          </ListItem>
+        )}
+        {role === 'owner' && (
+          <ListItem button component={Link} to="/owner/settings" selected={isActive('/owner/settings')}>
             <ListItemIcon><SettingsIcon sx={{ color: '#1976d2' }} /></ListItemIcon>
             <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 'bold' }} />
           </ListItem>

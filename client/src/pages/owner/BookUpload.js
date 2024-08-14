@@ -1,33 +1,63 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Container, Paper } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { TextField, Button, Box, Typography, Container, Paper, MenuItem, Alert } from '@mui/material';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+
+const categories = [
+  { value: 'Science Fiction', label: 'Science Fiction' },
+  { value: 'Fantasy', label: 'Fantasy' },
+  { value: 'Mystery', label: 'Mystery' },
+  { value: 'Biography', label: 'Biography' },
+];
 
 const BookUpload = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
-  const [description, setDescription] = useState('');
-  const [file, setFile] = useState(null);
+  const [category, setCategory] = useState('');
+  const [availableQuantity, setAvailableQuantity] = useState('');
+  const [price, setPrice] = useState('');
+  const [ownerId, setOwnerId] = useState(null);
+  const [message, setMessage] = useState(''); // For storing success/error message
+  const [messageType, setMessageType] = useState(''); // For storing the type of message (success/error)
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setOwnerId(decodedToken.id);
+    }
+  }, []);
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('author', author);
-    formData.append('description', description);
-    formData.append('file', file);
-
     try {
-      const response = await axios.post('http://localhost:5000/api/books/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const token = localStorage.getItem('token');
+      await axios.post(
+        'http://localhost:5000/api/books',
+        {
+          title,
+          author,
+          category,
+          available_quantity: availableQuantity,
+          price,
+          ownerId,
         },
-      });
-      console.log('Book uploaded successfully:', response.data);
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMessage('Book uploaded successfully!');
+      setMessageType('success');
+      // Clear form fields after successful upload
+      setTitle('');
+      setAuthor('');
+      setCategory('');
+      setAvailableQuantity('');
+      setPrice('');
     } catch (error) {
-      console.error('Error uploading book:', error.response?.data?.message || error.message);
+      setMessage(error.response?.data?.message || 'Error uploading book');
+      setMessageType('error');
     }
   };
 
@@ -38,6 +68,11 @@ const BookUpload = () => {
           Upload Book
         </Typography>
         <Box component="form" noValidate sx={{ mt: 1 }}>
+          {message && (
+            <Alert severity={messageType} sx={{ width: '100%', mb: 2 }}>
+              {message}
+            </Alert>
+          )}
           <TextField
             label="Title"
             variant="outlined"
@@ -57,34 +92,48 @@ const BookUpload = () => {
             onChange={(e) => setAuthor(e.target.value)}
           />
           <TextField
-            label="Description"
+            select
+            label="Category"
             variant="outlined"
             fullWidth
             margin="normal"
-            multiline
-            rows={4}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            component="label"
-            fullWidth
-            sx={{ mt: 2, mb: 2 }}
+            required
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
           >
-            Upload File
-            <input
-              type="file"
-              hidden
-              onChange={handleFileChange}
-            />
-          </Button>
+            {categories.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label="Available Quantity"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            required
+            type="number"
+            value={availableQuantity}
+            onChange={(e) => setAvailableQuantity(e.target.value)}
+          />
+          <TextField
+            label="Price"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            required
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
           <Button
             variant="contained"
             color="primary"
             fullWidth
             sx={{ mt: 2, mb: 2 }}
             onClick={handleUpload}
+            disabled={!ownerId}
           >
             Upload Book
           </Button>

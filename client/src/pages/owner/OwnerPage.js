@@ -4,7 +4,7 @@ import Sidebar from '../../components/Sidebar';
 import BookUpload from './BookUpload';
 import BookRental from './BookRental';
 import BookReturn from './BookReturn';
-import Dashboard from './Dashboard'; // Placeholder for now
+import Dashboard from './Dashboard'; // Placeholder {}}
 import Notification from '../../components/Notification';
 import Settings from '../../components/Settings';
 import { jwtDecode } from 'jwt-decode';

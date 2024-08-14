@@ -9,7 +9,7 @@ const Settings = () => {
       </Typography>
       <Box sx={{ mb: 2 }}>
         <Paper elevation={3} sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {/* Add setting*/}
+          {/* Add setting */}
           <Typography variant="h6">Settings</Typography>
         </Paper>
       </Box>

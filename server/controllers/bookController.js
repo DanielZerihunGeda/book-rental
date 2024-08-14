@@ -3,9 +3,19 @@ const { Book } = require('../models');
 // Create a new book
 exports.createBook = async (req, res) => {
     try {
-        const book = await Book.create(req.body);
-        res.status(201).json(book);
+        const { title, author, category, available_quantity, price, ownerId } = req.body;
+
+        // Basic validation
+        if (!title || !author || !category || !available_quantity || !price || !ownerId) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        // Create the book
+        const book = await Book.create({ title, author, category, available_quantity, price, ownerId });
+        
+        res.status(201).json({ message: 'Book created successfully', book });
     } catch (err) {
+        console.error('Error creating book:', err);
         res.status(500).json({ error: 'Server error' });
     }
 };

@@ -21,10 +21,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL,
       allowNull: false
     },
-    status: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     ownerId: {
       type: DataTypes.INTEGER,
       references: {

@@ -32,12 +32,12 @@ exports.rentBook = async (req, res) => {
             quantity
         });
 
-        // Update the book's available quantity
+        // Update the books available 
         await book.update({ available_quantity: book.available_quantity - quantity });
 
         res.status(201).json(rental);
     } catch (err) {
-        console.error(err); // Log the error for debugging
+        console.error(err); // Log error 
         res.status(500).json({ error: 'Server error' });
     }
 };

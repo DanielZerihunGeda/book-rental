@@ -13,12 +13,12 @@ const Books = ({ role }) => {
     // Fetch books data
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('/api/books', {
+        const response = await axios.get('http://localhost:5000/api/books/admin', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
-        setBooks(response.data.books);
+        setBooks(response.data);
       } catch (error) {
         console.error('Failed to fetch books:', error);
       }
@@ -30,7 +30,7 @@ const Books = ({ role }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <Sidebar role={role} currentPath={currentPath} /> {/* Pass the current path to Sidebar */}
-      <Container component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Container component="main" sx={{ flexGrow: 1, p: 3, maxWidth: '90%' }}>
         <Typography variant="h4" gutterBottom>
           Books
         </Typography>
@@ -38,18 +38,22 @@ const Books = ({ role }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
                 <TableCell>Title</TableCell>
-                <TableCell>Author</TableCell>
+                <TableCell>Owner</TableCell>
+                <TableCell>Available Quantity</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Date Added</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {books.map((book) => (
                 <TableRow key={book.id}>
-                  <TableCell>{book.id}</TableCell>
                   <TableCell>{book.title}</TableCell>
-                  <TableCell>{book.author}</TableCell>
+                  <TableCell>{book.owner.name}</TableCell>
+                  <TableCell>{book.available_quantity}</TableCell>
+                  <TableCell>{book.price}</TableCell>
+                  <TableCell>{new Date(book.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <Button variant="contained" color="primary" sx={{ mr: 1 }}>
                       Edit

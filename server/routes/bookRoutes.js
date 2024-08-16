@@ -1,18 +1,20 @@
 const express = require('express');
-const { createBook, getBooks, updateBook, deleteBook } = require('../controllers/bookController');
+const { createBook, getBooks, updateBook, deleteBook, updateBookStatus, Admingetbooks, fetchOwner } = require('../controllers/bookController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
-// Create a new book route
 router.post('/', authMiddleware, createBook);
 
-// Get all books api
 router.get('/', getBooks);
 
-// Update information based on the id of each books
+router.get('/admin', authMiddleware, Admingetbooks);
+
 router.put('/:id', authMiddleware, updateBook);
 
-// Delete a book based on id provided
+router.patch('/:id/status', authMiddleware, updateBookStatus);
+
 router.delete('/:id', authMiddleware, deleteBook);
+
+router.get('/owners', authMiddleware, fetchOwner)
 
 module.exports = router;

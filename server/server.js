@@ -12,13 +12,13 @@ const port = process.env.PORT || 5000;
 
 app.use(cors({
   origin: 'http://localhost:3000', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], 
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use(bodyParser.json());
 
-// Public routes for authentication and registration
+// Public routes for authenticaauthRoutestion and registration
 app.use('/api/auth', authRoutes);
 
 // Protected routes

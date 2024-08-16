@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    initial_quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     available_quantity: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -28,12 +32,24 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       },
       allowNull: false
+    },
+    status: { 
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'available' 
     }
   }, {
-    timestamps: true
+    timestamps: true,
+    hooks: {
+      beforeCreate: (book, options) => {
+        book.available_quantity = book.initial_quantity;
+      }
+    }
   });
+
   Book.associate = function(models) {
     Book.belongsTo(models.User, { foreignKey: 'ownerId', as: 'owner' });
   };
+
   return Book;
 };

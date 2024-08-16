@@ -66,3 +66,22 @@ exports.loginUser = async (req, res) => {
         res.status(500).json({ status: 'error', message: 'Server error' });
     }
 };
+
+// Delete User
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    await user.destroy();
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};

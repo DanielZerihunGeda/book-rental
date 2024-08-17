@@ -11,16 +11,25 @@ const config = require(__dirname + '/../config/config.js')[env];
 
 console.log('Environment:', env);
 console.log('Configuration loaded:', config);
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
+console.log('DB_USERNAME:', process.env.DB_USERNAME);
+console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_HOST:', process.env.DB_HOST);
+console.log('DB_PORT:', process.env.DB_PORT);
+console.log('DB_DIALECT:', process.env.DB_DIALECT);
 
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
+if (config && config.use_env_variable) {
   console.log('Using environment variable for database URL');
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
+} else if (config) {
   console.log('Using database configuration directly');
   sequelize = new Sequelize(config.database, config.username, config.password, config);
+} else {
+  console.error('Configuration is undefined. Please check your config file and environment variables.');
 }
 
 fs

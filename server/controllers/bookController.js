@@ -20,7 +20,7 @@ exports.Admingetbooks = async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   };
-exports.createBook = async (req, res) => {
+  exports.createBook = async (req, res) => {
     try {
         const { title, author, category, available_quantity, price, ownerId } = req.body;
 

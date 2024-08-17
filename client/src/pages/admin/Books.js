@@ -13,7 +13,7 @@ const Books = ({ role }) => {
     // Fetch books data
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/books/admin', {
+        const response = await axios.get('https://book-rental-nvrq.onrender.com/api/books/admin', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },

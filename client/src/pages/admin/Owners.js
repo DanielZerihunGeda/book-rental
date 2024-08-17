@@ -10,7 +10,7 @@ const Owners = () => {
     // Fetch owners data
     const fetchOwners = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/books/owners', {
+        const response = await axios.get('https://book-rental-nvrq.onrender.com/api/books/owners', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -26,7 +26,7 @@ const Owners = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/auth/users/${id}`, {
+      await axios.delete(`https://book-rental-nvrq.onrender.com/api/auth/users/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

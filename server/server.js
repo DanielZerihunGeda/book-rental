@@ -23,7 +23,7 @@ console.log('Loaded Environment Variables:', {
 });
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://your-render-app.onrender.com'],
+  origin: ['http://localhost:3000', 'https://book-rental-peach.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));

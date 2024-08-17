@@ -35,7 +35,7 @@ const BookRental = () => {
       const token = localStorage.getItem('token'); // Get token from localStorage
 
       await axios.post(
-        'http://localhost:5000/api/rentals/rent',
+        'https://book-rental-nvrq.onrender.com/api/rentals/rent',
         { bookId, username, address, email, phone, rentStart, rentEnd, quantity },
         {
           headers: {

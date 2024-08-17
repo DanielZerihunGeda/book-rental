@@ -11,7 +11,7 @@ const BookReturn = () => {
   const handleReturnBook = async () => {
     try {
       const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
-      await axios.post('http://localhost:5000/api/rentals/return', { rentalId, quantity }, {
+      await axios.post('https://book-rental-nvrq.onrender.com/api/rentals/return', { rentalId, quantity }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -25,7 +25,7 @@ const BookReturn = () => {
 const fetchRentals = async () => {
   try {
       const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
-      const response = await axios.get('http://localhost:5000/api/rentals/', {
+      const response = await axios.get('https://book-rental-nvrq.onrender.com/api/rentals/', {
           headers: {
               Authorization: `Bearer ${token}`
           }

@@ -18,7 +18,7 @@ const Dashboard = () => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
 
-        const response = await axios.get(`http://localhost:5000/api/books?ownerId=${ownerId}`, {
+        const response = await axios.get(`https://book-rental-nvrq.onrender.com/api/books?ownerId=${ownerId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -34,7 +34,7 @@ const Dashboard = () => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No token found');
     
-        const response = await axios.get('http://localhost:5000/api/rentals/getAggregatedRental', {
+        const response = await axios.get('https://book-rental-nvrq.onrender.com/api/rentals/getAggregatedRental', {
           headers: { Authorization: `Bearer ${token}` }
         });
     
@@ -91,7 +91,7 @@ const Dashboard = () => {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
 
-      await axios.put(`http://localhost:5000/api/books/${editingBook.id}`, editingBook, {
+      await axios.put(`https://book-rental-nvrq.onrender.com/api/books/${editingBook.id}`, editingBook, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

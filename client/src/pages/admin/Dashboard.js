@@ -36,7 +36,7 @@ const Dashboard = () => {
     // Fetch dashboard data
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/rentals/dashboard', {
+        const response = await axios.get('https://book-rental-nvrq.onrender.com/api/rentals/dashboard', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },

@@ -32,7 +32,7 @@ const BookUpload = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        'http://localhost:5000/api/books',
+        'https://book-rental-nvrq.onrender.com/api/books',
         {
           title,
           author,

@@ -22,7 +22,7 @@ const Registration = () => {
     setSuccess(false);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+      const res = await axios.post('https://book-rental-nvrq.onrender.com/api/auth/register', formData);
 
       if (res.data.status === 'success') {
         setSuccess(true);

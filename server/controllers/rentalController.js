@@ -1,6 +1,7 @@
-const { Rental, Book, User } = require('../models'); // 
+const { Rental, Book, User, sequelize } = require('../models'); 
 const jwt = require('jsonwebtoken');
-const {Op, sequelize} = require('sequelize')
+const { Op } = require('sequelize');
+
 exports.rentBook = async (req, res) => {
     try {
         const { bookId, username, address, email, phone, rentStart, rentEnd, quantity } = req.body;
@@ -114,82 +115,128 @@ exports.getRentals = async (req, res) => {
 };
 
 exports.getAggregatedRentals = async (req, res) => {
-  try {
-    const ownerId = req.user.id; // Assuming ownerId is stored in req.user from authentication middleware
-
-    console.log('Verified OwnerId:', ownerId); // Debugging line
-
-    const rentals = await Rental.findAll({
-      attributes: [
-        [sequelize.fn('DATE', sequelize.col('rentStart')), 'date'],
-        [sequelize.fn('SUM', sequelize.col('totalPrice')), 'totalRevenue'],
-      ],
-      include: [
-        {
-          model: Book,
-          as: 'book',
-          where: { ownerId },
-          attributes: []
-        }
-      ],
-      group: ['date'],
-      order: [['date', 'ASC']],
-      logging: console.log
-    });
-
-    console.log('Aggregated Rentals:', rentals); // Debugging line
-    res.json(rentals);
-  } catch (err) {
-    console.error('Error fetching aggregated rentals:', err); // Log error
-    res.status(500).json({ error: 'Server error' });
-  }
-};
-
-
-exports.getDashboardData = async (req, res) => {
-  try {
-    // Decode the token
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Total Books
-    const totalBooks = await Book.count();
-
-    // Books Currently Rented Out
-    const rentedBooks = await Rental.count({ where: { returnedQuantity: 0 } });
-
-    // Total Rentals
-    const totalRentals = await Rental.count();
-
-    // Active Rentals
-    const activeRentals = await Rental.count({ where: { rentEnd: { [Op.gt]: new Date() } } });
-
-    // Overdue Rentals
-    const overdueRentals = await Rental.count({ where: { rentEnd: { [Op.lt]: new Date() }, returnedQuantity: 0 } });
-
-    // Total Revenue
-    const totalRevenue = await Rental.sum('totalPrice');
-
-    // Most Rented Books
-    const mostRentedBooks = await Rental.findAll({
-      attributes: ['bookId', [sequelize.fn('COUNT', sequelize.col('bookId')), 'rentCount']],
-      group: ['bookId'],
-      order: [[sequelize.fn('COUNT', sequelize.col('bookId')), 'DESC']],
-      limit: 5,
-      include: [{ model: Book, attributes: ['title'] }]
-    });
-
-    res.json({
-      totalBooks,
-      rentedBooks,
-      totalRentals,
-      activeRentals,
-      overdueRentals,
-      totalRevenue,
-      mostRentedBooks
-    });
-  } catch (err) {
-    console.error('Error fetching dashboard data:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-};
+    console.log('Request received for aggregated rentals'); // Debugging line
+    try {
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        console.log('No token provided');
+        return res.status(401).json({ msg: 'No token provided' });
+      }
+  
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const ownerId = decoded.id; // Extract ownerId from the token
+  
+      console.log('Verified OwnerId:', ownerId); // Debugging line
+  
+      const rentals = await Rental.findAll({
+        attributes: [
+          [sequelize.fn('DATE', sequelize.col('rentStart')), 'date'],
+          [sequelize.fn('SUM', sequelize.col('totalPrice')), 'totalRevenue'],
+        ],
+        include: [
+          {
+            model: Book,
+            as: 'book',
+            where: { ownerId },
+            attributes: []
+          }
+        ],
+        group: ['date'],
+        order: [['date', 'ASC']],
+        logging: console.log
+      });
+  
+      console.log('Aggregated Rentals:', rentals); // Debugging line
+      res.json(rentals);
+    } catch (err) {
+      console.error('Error fetching aggregated rentals:', err); // Log error
+      res.status(500).json({ error: 'Server error' });
+    }
+  };
+  exports.getAggregatedRentals = async (req, res) => {
+    try {
+      // Decode the token
+      const token = req.headers.authorization.split(' ')[1];
+      if (!token) {
+        console.log('No token provided');
+        return res.status(401).json({ msg: 'No token provided' });
+      }
+  
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const ownerId = decoded.id; // Extract ownerId from the token
+  
+      console.log('Verified OwnerId:', ownerId); // Debugging line
+  
+      const rentals = await Rental.findAll({
+        attributes: [
+          [sequelize.fn('DATE', sequelize.col('rentStart')), 'date'],
+          [sequelize.fn('SUM', sequelize.col('totalPrice')), 'totalRevenue'],
+        ],
+        include: [
+          {
+            model: Book,
+            as: 'book',
+            where: { ownerId },
+            attributes: []
+          }
+        ],
+        group: ['date'],
+        order: [['date', 'ASC']],
+        logging: console.log
+      });
+  
+      console.log('Aggregated Rentals:', rentals); // Debugging line
+      res.json(rentals);
+    } catch (err) {
+      console.error('Error fetching aggregated rentals:', err); // Log error
+      res.status(500).json({ error: 'Server error' });
+    }
+  };
+  
+  exports.getDashboardData = async (req, res) => {
+    try {
+      // Decode the token
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  
+      // Total Books
+      const totalBooks = await Book.count();
+  
+      // Books Currently Rented Out
+      const rentedBooks = await Rental.count({ where: { returnedQuantity: 0 } });
+  
+      // Total Rentals
+      const totalRentals = await Rental.count();
+  
+      // Active Rentals
+      const activeRentals = await Rental.count({ where: { rentEnd: { [Op.gt]: new Date() } } });
+  
+      // Overdue Rentals
+      const overdueRentals = await Rental.count({ where: { rentEnd: { [Op.lt]: new Date() }, returnedQuantity: 0 } });
+  
+      // Total Revenue
+      const totalRevenue = await Rental.sum('totalPrice');
+  
+      // Most Rented Books
+      const mostRentedBooks = await Rental.findAll({
+        attributes: ['bookId', [sequelize.fn('COUNT', sequelize.col('bookId')), 'rentCount']],
+        group: ['bookId'],
+        order: [[sequelize.fn('COUNT', sequelize.col('bookId')), 'DESC']],
+        limit: 5,
+        include: [{ model: Book, attributes: ['title'] }]
+      });
+  
+      res.json({
+        totalBooks,
+        rentedBooks,
+        totalRentals,
+        activeRentals,
+        overdueRentals,
+        totalRevenue,
+        mostRentedBooks
+      });
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  };

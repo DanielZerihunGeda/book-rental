@@ -114,9 +114,9 @@ exports.getRentals = async (req, res) => {
 };
 
 exports.getAggregatedRentals = async (req, res) => {
-    console.log('Request received for aggregated rentals'); // Debugging line
     try {
-      const token = req.headers.authorization?.split(' ')[1];
+      // Decode the token
+      const token = req.headers.authorization.split(' ')[1];
       if (!token) {
         console.log('No token provided');
         return res.status(401).json({ msg: 'No token provided' });
@@ -152,38 +152,6 @@ exports.getAggregatedRentals = async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   };
-  exports.getAggregatedRentals = async (req, res) => {
-    try {
-      const ownerId = req.user.id; // Assuming ownerId is stored in req.user from authentication middleware
-  
-      console.log('Verified OwnerId:', ownerId); // Debugging line
-  
-      const rentals = await Rental.findAll({
-        attributes: [
-          [sequelize.fn('DATE', sequelize.col('rentStart')), 'date'],
-          [sequelize.fn('SUM', sequelize.col('totalPrice')), 'totalRevenue'],
-        ],
-        include: [
-          {
-            model: Book,
-            as: 'book',
-            where: { ownerId },
-            attributes: []
-          }
-        ],
-        group: ['date'],
-        order: [['date', 'ASC']],
-        logging: console.log
-      });
-  
-      console.log('Aggregated Rentals:', rentals); // Debugging line
-      res.json(rentals);
-    } catch (err) {
-      console.error('Error fetching aggregated rentals:', err); // Log error
-      res.status(500).json({ error: 'Server error' });
-    }
-  };
-  
   
   exports.getDashboardData = async (req, res) => {
     try {

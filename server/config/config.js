@@ -7,6 +7,12 @@ module.exports = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT || 'postgres', // Default to postgres if not set
+    dialect: process.env.DB_DIALECT || 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false // set to true if needed
+      }
+    }
   },
 };

@@ -29,15 +29,24 @@ exports.Admingetbooks = async (req, res) => {
             return res.status(400).json({ error: 'All fields are required' });
         }
 
+        console.log('Creating book with data:', { title, author, category, available_quantity, price, ownerId });
+
         // Create the book
         const book = await Book.create({ title, author, category, available_quantity, price, ownerId });
         
+        console.log('Book created successfully:', book);
+
         res.status(201).json({ message: 'Book created successfully', book });
     } catch (err) {
         console.error('Error creating book:', err);
+        if (err.name === 'SequelizeValidationError') {
+            return res.status(400).json({ error: 'Validation error', details: err.errors });
+        }
         res.status(500).json({ error: 'Server error' });
     }
 };
+
+
 
 // To b filtered ..... 
 exports.getBooks = async (req, res) => {

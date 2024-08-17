@@ -154,15 +154,7 @@ exports.getAggregatedRentals = async (req, res) => {
   };
   exports.getAggregatedRentals = async (req, res) => {
     try {
-      // Decode the token
-      const token = req.headers.authorization.split(' ')[1];
-      if (!token) {
-        console.log('No token provided');
-        return res.status(401).json({ msg: 'No token provided' });
-      }
-  
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const ownerId = decoded.id; // Extract ownerId from the token
+      const ownerId = req.user.id; // Assuming ownerId is stored in req.user from authentication middleware
   
       console.log('Verified OwnerId:', ownerId); // Debugging line
   
@@ -191,6 +183,7 @@ exports.getAggregatedRentals = async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   };
+  
   
   exports.getDashboardData = async (req, res) => {
     try {

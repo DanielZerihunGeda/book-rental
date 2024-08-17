@@ -22,17 +22,20 @@ exports.Admingetbooks = async (req, res) => {
   };
   exports.createBook = async (req, res) => {
     try {
-        const { title, author, category, available_quantity, price, ownerId } = req.body;
+        const { title, author, category, initial_quantity, price, ownerId } = req.body;
 
         // validation
-        if (!title || !author || !category || !available_quantity || !price || !ownerId) {
+        if (!title || !author || !category || !initial_quantity || !price || !ownerId) {
             return res.status(400).json({ error: 'All fields are required' });
         }
 
-        console.log('Creating book with data:', { title, author, category, available_quantity, price, ownerId });
+        // Automatically set available_quantity to initial_quantity
+        const available_quantity = initial_quantity;
+
+        console.log('Creating book with data:', { title, author, category, available_quantity, initial_quantity, price, ownerId });
 
         // Create the book
-        const book = await Book.create({ title, author, category, available_quantity, price, ownerId });
+        const book = await Book.create({ title, author, category, available_quantity, initial_quantity, price, ownerId });
         
         console.log('Book created successfully:', book);
 
@@ -45,8 +48,6 @@ exports.Admingetbooks = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
-
-
 
 // To b filtered ..... 
 exports.getBooks = async (req, res) => {

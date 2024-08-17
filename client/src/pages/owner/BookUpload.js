@@ -30,36 +30,36 @@ const BookUpload = () => {
 
   const handleUpload = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'https://book-rental-nvrq.onrender.com/api/books',
-        {
-          title,
-          author,
-          category,
-          available_quantity: availableQuantity,
-          price,
-          ownerId,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setMessage('Book uploaded successfully!');
-      setMessageType('success');
-      // Clear form fields after successful upload
-      setTitle('');
-      setAuthor('');
-      setCategory('');
-      setAvailableQuantity('');
-      setPrice('');
+        const token = localStorage.getItem('token');
+        await axios.post(
+            'https://book-rental-nvrq.onrender.com/api/books',
+            {
+                title,
+                author,
+                category,
+                initial_quantity: availableQuantity, // Use availableQuantity for initial_quantity
+                price,
+                ownerId,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        setMessage('Book uploaded successfully!');
+        setMessageType('success');
+        // Clear form fields after successful upload
+        setTitle('');
+        setAuthor('');
+        setCategory('');
+        setAvailableQuantity('');
+        setPrice('');
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Error uploading book');
-      setMessageType('error');
+        setMessage(error.response?.data?.message || 'Error uploading book');
+        setMessageType('error');
     }
-  };
+};
 
   return (
     <Container component="main" maxWidth="sm">

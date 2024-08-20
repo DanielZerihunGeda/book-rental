@@ -3,7 +3,7 @@ import { TextField, Button, Box, Typography, Container, Paper, FormControlLabel,
 import { LockOutlined as LockIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,7 +16,15 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post('https://book-rental-nvrq.onrender.com/api/auth/login', { email, password });
+      const source = axios.CancelToken.source();
+      const timeout = setTimeout(() => {
+        source.cancel();
+        setError('Request timed out. Please try again.');
+        setLoading(false);
+      }, 10000); // 10 seconds timeout
+
+      const response = await axios.post('https://book-rental-nvrq.onrender.com/api/auth/login', { email, password }, { cancelToken: source.token });
+      clearTimeout(timeout);
       const { token } = response.data;
       localStorage.setItem('token', token);
       const decodedToken = jwtDecode(token);
@@ -28,8 +36,12 @@ const Login = () => {
         navigate('/owner/dashboard');
       }
     } catch (error) {
-      setError('Login failed. Please check your credentials and try again.');
-      console.error('Login failed:', error.response?.data?.message || error.message);
+      if (axios.isCancel(error)) {
+        console.error('Request canceled:', error.message);
+      } else {
+        setError('Login failed. Please check your credentials and try again.');
+        console.error('Login failed:', error.response?.data?.message || error.message);
+      }
     } finally {
       setLoading(false);
     }

@@ -3,14 +3,18 @@ import { TextField, Button, Box, Typography, Container, Paper, FormControlLabel,
 import { LockOutlined as LockIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    setLoading(true);
+    setError('');
     try {
       const response = await axios.post('https://book-rental-nvrq.onrender.com/api/auth/login', { email, password });
       const { token } = response.data;
@@ -24,7 +28,10 @@ const Login = () => {
         navigate('/owner/dashboard');
       }
     } catch (error) {
+      setError('Login failed. Please check your credentials and try again.');
       console.error('Login failed:', error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,9 +80,11 @@ const Login = () => {
             fullWidth
             sx={{ mt: 2, mb: 2 }}
             onClick={handleLogin}
+            disabled={loading}
           >
-            Sign In
+            {loading ? 'Logging in...' : 'Sign In'}
           </Button>
+          {error && <Typography color="error">{error}</Typography>}
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Link href="#" variant="body2">
               Forgot password?
